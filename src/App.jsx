@@ -33,7 +33,7 @@ import About from './pages/About'
 import Account from './pages/Account';
 import EmailVerification from './pages/EmailVerification';
 import ForgotPassword from './pages/ForgotPassword';
-
+import TasksEvents from './pages/TasksEvents'
 
 function App() {
   return (
@@ -73,6 +73,7 @@ function App() {
         <Route path='/Myteams' element={<MyTeams/>} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
         <Route path="/EmailVerification" element={<EmailVerification />} /> 
+        <Route path="/tasksevents" element={<TasksEvents />} />
       </Routes>
     </Router>
   );

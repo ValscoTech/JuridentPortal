@@ -114,7 +114,7 @@ function Dashboard() {
               </div>
               <div className="pl-7 pr-7">
                 <Link
-                  to="/tasks"
+                  to="/tasksevents"
                   className="bg-gray-800 rounded-lg md:px-6 md:py-6 flex items-center space-x-4 hover:bg-gray-700 transition w-full"
                 >
                   <Calendar className="w-8 h-8 text-blue-400" />
