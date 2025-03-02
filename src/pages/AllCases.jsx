@@ -1,110 +1,124 @@
-import React, { useState } from "react";
-import { ArrowLeft, Search, Scale } from "lucide-react";
-import Navbar from "../components/Navbar";
+import React, { useState, useEffect } from "react";
+import { Filter, Search, ArrowLeft, User, Building, Scale } from "lucide-react";
 import { Link } from "react-router-dom";
+import Navbar from '../components/Navbar'
 
 // Mock data for cases
-
-const casesData = [
+const caseData = [
   {
-    id: 1,
-    caseNumber: "23-FA-234598",
-    caseType: "Criminal Case",
+    id: "23-FA-234598",
+    type: "Criminal Case",
     partyName: "Sambashiva Rao",
     court: "Supreme Court",
   },
   {
-    id: 2,
-    caseNumber: "22-FA-123456",
-    caseType: "Criminal Case",
+    id: "22-FA-123456",
+    type: "Criminal Case",
     partyName: "Rajesh Kumar",
     court: "High Court",
   },
   {
-    id: 3,
-    caseNumber: "21-FA-987654",
-    caseType: "Civil Case",
+    id: "21-FA-987654",
+    type: "Civil Case",
     partyName: "Priya Sharma",
     court: "District Court",
   },
   {
-    id: 4,
-    caseNumber: "23-FA-456789",
-    caseType: "Criminal Case",
+    id: "23-FA-456789",
+    type: "Criminal Case",
     partyName: "Vikram Singh",
     court: "Supreme Court",
   },
   {
-    id: 5,
-    caseNumber: "22-FA-345678",
-    caseType: "Civil Case",
+    id: "22-FA-345678",
+    type: "Civil Case",
     partyName: "Ananya Patel",
     court: "High Court",
   },
   {
-    id: 6,
-    caseNumber: "21-FA-234567",
-    caseType: "Criminal Case",
+    id: "21-FA-234567",
+    type: "Criminal Case",
     partyName: "Sambashiva Rao",
     court: "District Court",
   },
   {
-    id: 7,
-    caseNumber: "23-FA-876543",
-    caseType: "Civil Case",
+    id: "23-FA-876543",
+    type: "Civil Case",
     partyName: "Kiran Reddy",
     court: "Supreme Court",
   },
   {
-    id: 8,
-    caseNumber: "22-FA-765432",
-    caseType: "Criminal Case",
+    id: "22-FA-765432",
+    type: "Criminal Case",
     partyName: "Meera Desai",
     court: "High Court",
   },
   {
-    id: 9,
-    caseNumber: "21-FA-654321",
-    caseType: "Criminal Case",
+    id: "21-FA-654321",
+    type: "Criminal Case",
     partyName: "Sambashiva Rao",
     court: "District Court",
   },
 ];
 
-// Get unique court names and party names for filters
-const courtNames = [...new Set(casesData.map((caseItem) => caseItem.court))];
-const partyNames = [
-  ...new Set(casesData.map((caseItem) => caseItem.partyName)),
-];
-
-function AllCases() {
+function App() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCourt, setSelectedCourt] = useState("");
-  const [selectedParty, setSelectedParty] = useState("");
+  const [showFilterOptions, setShowFilterOptions] = useState(false);
+  const [filterType, setFilterType] = useState("");
+  const [filteredCases, setFilteredCases] = useState(caseData);
+  const [searchPlaceholder, setSearchPlaceholder] = useState("Search");
 
-  // Filter cases based on selected filters
-  const filteredCases = casesData.filter((caseItem) => {
-    const matchesCourt = selectedCourt
-      ? caseItem.court === selectedCourt
-      : true;
-    const matchesParty = selectedParty
-      ? caseItem.partyName === selectedParty
-      : true;
-    const matchesSearch = searchQuery
-      ? caseItem.caseNumber.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        caseItem.caseType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        caseItem.partyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        caseItem.court.toLowerCase().includes(searchQuery.toLowerCase())
-      : true;
+  useEffect(() => {
+    if (searchQuery === "") {
+      setFilteredCases(caseData);
+      return;
+    }
 
-    return matchesCourt && matchesParty && matchesSearch;
-  });
+    let filtered = caseData;
+
+    if (filterType === "court") {
+      filtered = caseData.filter((item) =>
+        item.court.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    } else if (filterType === "name") {
+      filtered = caseData.filter((item) =>
+        item.partyName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    } else {
+      // Default search across all fields
+      filtered = caseData.filter(
+        (item) =>
+          item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.partyName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          item.court.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    setFilteredCases(filtered);
+  }, [searchQuery, filterType]);
+
+  const handleFilterSelect = (type) => {
+    setFilterType(type);
+    setShowFilterOptions(false);
+
+    if (type === "court") {
+      setSearchPlaceholder("Search by court name");
+    } else if (type === "name") {
+      setSearchPlaceholder("Search by party name");
+    }
+
+    // Focus on search input after selecting filter
+    document.getElementById("search-input").focus();
+  };
 
   return (
-    <div className="min-h-screen bg-[#0a0529] text-white">
-      <Navbar />
-
+    <div className="min-h-screen bg-[#0c0a29] text-white relative">
+      <Navbar/>
+      <div className="background-circle circle-1 z-0"></div>
+      <div className="background-circle circle-2 z-0"></div>
       <main className="px-4 md:px-16 py-8">
+        {/* Page Title */}
         <div className="flex items-center mb-6">
           <Link to="/Dashboard">
             <div className="flex items-center md:ml-12">
@@ -116,89 +130,101 @@ function AllCases() {
           </Link>
         </div>
 
-        <div className="md:p-14">
-          {/* Search and Filters  */}
-          <div className="flex flex-col md:flex-row justify-between mb-8">
-            <div className="flex space-x-0 md:space-x-4 w-full md:w-2/3 mb-4 md:mb-0 gap-6">
-              {/* Court Filter */}
-              <div className="w-80 md:w-1/3">
-                <select
-                  className="w-full bg-gray-800 text-white px-4 py-2 rounded-md"
-                  value={selectedCourt}
-                  onChange={(e) => setSelectedCourt(e.target.value)}
-                >
-                  <option value="">All Courts</option>
-                  {courtNames.map((court, index) => (
-                    <option key={index} value={court}>
-                      {court}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        <div className="md:p-18">
+          {/* Search and Filter */}
+          <div className="px-6 py-4 flex justify-end relative">
+            <div className="relative flex items-center w-full max-w-md">
+              <button
+                className="absolute left-0 flex items-center text-gray-400 p-3"
+                onClick={() => setShowFilterOptions(true)}
+              >
+                <Filter className="h-5 w-5 text-yellow-500" />
+                <span className="ml-2 text-lg text-yellow-500">Filter</span>
+              </button>
 
-              {/* Party Name Filter */}
-              <div className="w-80 md:w-1/3">
-                <select
-                  className="w-full bg-gray-800 text-white px-4 py-2 rounded-md"
-                  value={selectedParty}
-                  onChange={(e) => setSelectedParty(e.target.value)}
-                >
-                  <option value="">All Parties</option>
-                  {partyNames.map((party, index) => (
-                    <option key={index} value={party}>
-                      {party}
-                    </option>
-                  ))}
-                </select>
+              <div className="w-full ml-24">
+                <div className="relative rounded-full bg-gray-800 flex items-center">
+                  <Search className="absolute left-3 text-gray-400" />
+                  <input
+                    id="search-input"
+                    type="text"
+                    placeholder={searchPlaceholder}
+                    className="w-full py-3 pl-10 pr-4 bg-gray-800 rounded-full focus:outline-none"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* Search Bar */}
-            <div className="relative w-full md:w-1/4">
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full bg-gray-800 text-white pl-4 pr-10 py-2 rounded-md"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <div className="absolute right-3 top-2.5 text-gray-400">
-                <Search size={20} />
+            {/* Filter Options Modal */}
+            {showFilterOptions && (
+              <div className="absolute top-16 right-6 bg-white text-black rounded-lg p-6 shadow-lg z-10 w-72">
+                <h3 className="text-2xl font-bold mb-6">Filter Options</h3>
+
+                <div
+                  className="flex items-center p-3 hover:bg-gray-100 rounded cursor-pointer"
+                  onClick={() => handleFilterSelect("court")}
+                >
+                  <Building className="mr-4" />
+                  <span className="text-lg">Court</span>
+                </div>
+
+                <div
+                  className="flex items-center p-3 hover:bg-gray-100 rounded cursor-pointer"
+                  onClick={() => handleFilterSelect("name")}
+                >
+                  <User className="mr-4" />
+                  <span className="text-lg">Name</span>
+                </div>
+
+                <div className="mt-6 text-right">
+                  <button
+                    className="text-purple-400 text-lg"
+                    onClick={() => setShowFilterOptions(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
           </div>
+        </div>
 
-          {/* Cases Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-80">
+        <div className="md:px-12">
+          {/* Case Cards */}
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCases.map((caseItem) => (
               <Link
                 key={caseItem.id}
                 to={`/case/${caseItem.id}`}
-                className="bg-[#2a2a5a] rounded-lg p-4 flex items-center hover:bg-[#3a3a7a] transition-colors cursor-pointer"
+                className="block bg-[#1e1b4b] rounded-lg p-4 hover:bg-[#2d2a5a] transition-colors duration-200"
               >
-                <div className="mr-4">
-                  <Scale size={48} className="text-yellow-500" />
-                </div>
-                <div>
-                  <p className="text-gray-300">
-                    Case Number: {caseItem.caseNumber}
-                  </p>
-                  <p className="text-white font-semibold text-lg">
-                    {caseItem.caseType}
-                  </p>
-                  <p className="text-gray-300">
-                    Party Name: {caseItem.partyName}
-                  </p>
-                  <p className="text-gray-300 text-sm">
-                    Court: {caseItem.court}
-                  </p>
+                <div className="flex">
+                  <div className="mr-4 flex items-center">
+                    <div className="w-16 h-16 flex items-center justify-center">
+                      <Scale size={48} color="#FFD700" strokeWidth={1.5} />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-gray-400">Case Number: {caseItem.id}</p>
+                    <h3 className="text-xl font-bold">{caseItem.type}</h3>
+                    <p>Party Name: {caseItem.partyName}</p>
+                    <p>Court: {caseItem.court}</p>
+                  </div>
                 </div>
               </Link>
             ))}
           </div>
         </div>
       </main>
+      {/* Background Decoration */}
+      <div className="absolute top-0 right-0 w-full h-full overflow-hidden -z-10">
+        <div className="absolute top-0 right-0 w-3/4 h-3/4 bg-purple-900 rounded-full opacity-10 transform translate-x-1/4 -translate-y-1/4"></div>
+        <div className="absolute bottom-0 left-0 w-full h-1/2 bg-purple-900 rounded-full opacity-10 transform -translate-x-1/4 translate-y-1/4"></div>
+      </div>
     </div>
   );
 }
-export default AllCases;
+
+export default App;

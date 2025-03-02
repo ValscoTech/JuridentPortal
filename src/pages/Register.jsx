@@ -19,7 +19,7 @@ const Register = () => {
         <img src="../Jurident-Logo-bottom.png" className='absolute opacity-0 sm:opacity-[1] right-5 bottom-5' alt="" />
       {/* Pop-up Message */}
       {showPopup && (
-        <div className="absolute top-25 bg-white text-black px-4 py-2 rounded shadow-lg font-semibold">
+        <div className="top-0 bg-white text-black px-4 py-2 rounded shadow-lg font-semibold">
           Selected as {selectedRole}
         </div>
       )}

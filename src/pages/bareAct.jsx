@@ -93,6 +93,8 @@ const BareAct = () => {
     <>
       <div className="relative min-h-screen flex flex-col">
         <Navbar />
+        <div className="background-circle circle-1 z-0"></div>
+        <div className="background-circle circle-2 z-0"></div>
         <main className="px-4 md:px-16 py-8">
         <div className="relative z-10 grid grid-cols-2 items-center pt-4 pb-4">
           <Link to="/Dashboard">

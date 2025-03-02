@@ -15,6 +15,8 @@ function Account() {
   return (
     <>
       <Navbar />
+      <div className="background-circle circle-1 z-0"></div>
+      <div className="background-circle circle-2 z-0"></div>
       <div className="max-w-4xl mx-auto space-y-8 p-12">
         <div className="bg-[#1E1E45] rounded-lg p-8">
           <h2 className="text-xl font-bold text-yellow-500 mb-6">
